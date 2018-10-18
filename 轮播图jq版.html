@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+	</head>
+	<body>
+		<!--轮播图容器开始-->
+		<!--<div id="container">-->
+			<!--图片列表开始，让替身图第一个隐藏-->
+			<div id="list" style="left: -600px">
+				<!--替身图-->
+				<img src="img/5.jpg"/>
+				<img src="img/1.jpg"/>
+				<img src="img/2.jpg"/>
+				<img src="img/3.jpg"/>
+				<img src="img/4.jpg"/>
+				<img src="img/5.jpg"/>
+				<!--替身图-->
+				<img src="img/1.jpg"/>
+			</div>
+			<!--图片列表结束-->
+			<!--切换按钮组开始-->
+			<div id="buttons">
+				<span class="on"></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+			<!--切换按钮组结束-->
+			<!--左右箭头开始-->
+			<a href="javascript:void(0);" id="prev" class="arrow">&lt;</a>
+			<a href="javascript:void(0);" id="next" class="arrow">&gt;</a>
+			<!--左右箭头结束-->
+		</div>
+		<!--轮播图容器结束-->
+		
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function() {
+				
+				//获得对象
+				var list = $('#list');
+				
+				//图片数量
+				var imgCount = list.find('img').length - 2;
+				
+				//图片宽度
+				var imgWidth = 600;
+				
+				//当前图片索引
+				var currIndex = 0;
+				
+				//左键头（上一张）
+				$('#prev').click(function(){
+					
+					//判断当前动画是否在运动中
+					if ($('#list:animated').length != 0 ){
+						return;
+					}
+						
+					//索引递减
+					currIndex --;
+					
+					if(currIndex < 0)
+						currIndex = imgCount - 1;
+					//调用运动函数
+					go(imgWidth);
+					
+				});
+				
+				
+				//右键头（下一张）
+				$('#next').click(function(){
+					
+					
+						
+					//索引递增
+					currIndex ++;
+					if(currIndex > 4)
+						currIndex = 0;
+					//调用运动函数
+					go(-imgWidth);
+					
+				});
+				
+//				//切换按钮
+				$('#buttons span').click(function(){
+					
+					//判断当前动画是否在运动中
+					if ($('#list:animated').length != 0 ){
+						return;
+					}
+					
+					//获得当前点击按钮的下标
+					var index = $(this).index();
+					
+					//计算偏移量
+					var offset = imgWidth * (currIndex - index);
+					
+					
+					//更新索引
+					currIndex = index;
+					
+					
+					//调用运动函数
+					go(offset);
+					
+					
+					
+					
+				});
+				
+				
+				/*
+				 运动函数
+				 * offset:需要偏移的大小
+				 * */
+				function go(offset) {
+					
+					
+					
+					//图片列表动画过渡到指定位置
+					list.animate({
+						left:'+=' + offset
+					},1000,function() {
+						
+						//当前位置是第五张的替身图，直接定位到第五张真图
+						if( parseInt(list.css('left')) == 0 )
+							list.css('left',-3000);
+						
+						//当前位置是第一张的替身图
+						if( parseInt(list.css('left')) == -3600 )
+							list.css('left',-600);
+						
+						
+					});
+					
+					//调用高亮函数
+					highlight();
+					
+				}
+				
+				//高亮函数
+				function highlight() {
+					
+					$('#buttons span').removeClass('on');
+					$('#buttons span').eq(currIndex).addClass('on');
+					
+				}
+				
+				
+			});
+		</script>
+	</body>
+</html>
